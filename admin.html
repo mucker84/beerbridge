@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BeerBridge Admin</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f5f5f3;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 700px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .header h1 {
+      font-size: 18px;
+      font-weight: 500;
+      color: #1a1a1a;
+    }
+
+    .header span {
+      font-size: 12px;
+      color: #999;
+    }
+
+    #login-screen {
+      background: #fff;
+      border: 0.5px solid #e0ddd8;
+      border-radius: 12px;
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    #login-screen p {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 1.5rem;
+    }
+
+    #login-btn {
+      background: #B87333;
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 500;
+    }
+
+    #login-btn:hover { background: #9a6128; }
+
+    #admin-screen { display: none; }
+
+    .stats {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat {
+      background: #fff;
+      border: 0.5px solid #e0ddd8;
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      flex: 1;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 500;
+      color: #1a1a1a;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #999;
+      margin-top: 2px;
+    }
+
+    table {
+      width: 100%;
+      background: #fff;
+      border: 0.5px solid #e0ddd8;
+      border-radius: 10px;
+      border-collapse: collapse;
+      overflow: hidden;
+    }
+
+    th {
+      text-align: left;
+      font-size: 11px;
+      font-weight: 500;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 10px 16px;
+      border-bottom: 0.5px solid #e0ddd8;
+      background: #faf9f7;
+    }
+
+    td {
+      padding: 10px 16px;
+      font-size: 13px;
+      color: #333;
+      border-bottom: 0.5px solid #f0ede8;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    .role-badge {
+      display: inline-block;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      background: #f0ede8;
+      color: #666;
+    }
+
+    .logout {
+      background: none;
+      border: 0.5px solid #ddd;
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-size: 12px;
+      color: #666;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .logout:hover { background: #f5f5f3; }
+
+    .empty {
+      text-align: center;
+      padding: 3rem;
+      font-size: 14px;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>BeerBridge Admin</h1>
+    <span id="user-email"></span>
+  </div>
+
+  <div id="login-screen">
+    <p>Přihlas se pro přístup k seznamu registrací</p>
+    <button id="login-btn">Přihlásit přes Google</button>
+  </div>
+
+  <div id="admin-screen">
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-value" id="count-total">—</div>
+        <div class="stat-label">celkem registrací</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="count-locals">—</div>
+        <div class="stat-label">Czech locals</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="count-expats">—</div>
+        <div class="stat-label">Expats</div>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Datum</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="signups-list">
+        <tr><td colspan="4" class="empty">Načítám...</td></tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top: 1rem; text-align: right;">
+      <button class="logout" id="logout-btn">Odhlásit</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+  import { getAuth, signInWithPopup, signOut, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+  import { getFirestore, collection, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+  const app = initializeApp({
+    apiKey: "AIzaSyBzegx71kilRB_z09x5Gn9GV0_8JxY7r0E",
+    authDomain: "beerbridge-55727.firebaseapp.com",
+    projectId: "beerbridge-55727",
+    storageBucket: "beerbridge-55727.firebasestorage.app",
+    messagingSenderId: "899245510101",
+    appId: "1:899245510101:web:a65c5b71d7a6f4db5b415c"
+  });
+
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const provider = new GoogleAuthProvider();
+
+  document.getElementById('login-btn').onclick = () => signInWithPopup(auth, provider);
+  document.getElementById('logout-btn').onclick = () => signOut(auth);
+
+  onAuthStateChanged(auth, async user => {
+    if (user) {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('admin-screen').style.display = 'block';
+      document.getElementById('user-email').textContent = user.email;
+      await loadSignups();
+    } else {
+      document.getElementById('login-screen').style.display = 'block';
+      document.getElementById('admin-screen').style.display = 'none';
+      document.getElementById('user-email').textContent = '';
+    }
+  });
+
+  async function loadSignups() {
+    const tbody = document.getElementById('signups-list');
+    try {
+      const q = query(collection(db, 'signups'), orderBy('ts', 'desc'));
+      const snap = await getDocs(q);
+
+      if (snap.empty) {
+        tbody.innerHTML = '<tr><td colspan="4" class="empty">Zatím žádné registrace</td></tr>';
+        document.getElementById('count-total').textContent = '0';
+        document.getElementById('count-locals').textContent = '0';
+        document.getElementById('count-expats').textContent = '0';
+        return;
+      }
+
+      const docs = snap.docs.map(d => d.data());
+      document.getElementById('count-total').textContent = docs.length;
+      document.getElementById('count-locals').textContent = docs.filter(d => d.role === 'Czech local').length;
+      document.getElementById('count-expats').textContent = docs.filter(d => d.role === 'Expat in Prague').length;
+
+      tbody.innerHTML = docs.map(d => {
+        const date = d.ts ? new Date(d.ts.seconds * 1000).toLocaleDateString('cs-CZ') : '—';
+        return `<tr>
+          <td>${d.email}</td>
+          <td><span class="role-badge">${d.role}</span></td>
+          <td>${date}</td>
+          <td><a href="mailto:${d.email}" style="font-size:12px;color:#B87333;text-decoration:none;">napsat</a></td>
+        </tr>`;
+      }).join('');
+
+    } catch(e) {
+      tbody.innerHTML = '<tr><td colspan="4" class="empty">Chyba načítání — nemáš přístup nebo špatná pravidla</td></tr>';
+    }
+  }
+</script>
+
+</body>
+</html>

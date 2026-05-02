@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-QQTD6TPJ7R"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-QQTD6TPJ7R');
+    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Locals and expats meet over a pint in Prague. Czech for English. Local tips for travel tips.">
+  <title>BeerBridge — Prague</title>
+
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBzegx71kilRB_z09x5Gn9GV0_8JxY7r0E",
+      authDomain: "beerbridge-55727.firebaseapp.com",
+      projectId: "beerbridge-55727",
+      storageBucket: "beerbridge-55727.firebasestorage.app",
+      messagingSenderId: "899245510101",
+      appId: "1:899245510101:web:a65c5b71d7a6f4db5b415c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.saveSignup = async function(email, role) {
+      await addDoc(collection(db, 'signups'), {
+        email,
+        role,
+        ts: serverTimestamp()
+      });
+    };
+  </script>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QQTD6TPJ7R"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-QQTD6TPJ7R');
+  </script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #f5f5f3;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 2rem 1rem;
+    }
+
+    .bb-hero {
+      font-family: 'DM Sans', sans-serif;
+      padding: 3rem 2rem 2.5rem;
+      max-width: 680px;
+      width: 100%;
+      background: #fff;
+      border-radius: 12px;
+      border: 0.5px solid #e0ddd8;
+    }
+
+    .bb-flag {
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+      font-size: 12px;
+      color: #777;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+      padding: 5px 12px;
+      border: 0.5px solid #ddd;
+      border-radius: 20px;
+    }
+
+    .bb-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(38px, 8vw, 52px);
+      line-height: 1.1;
+      color: #1a1a1a;
+      margin-bottom: 0.5rem;
+    }
+
+    .bb-title em {
+      font-style: italic;
+      color: #B87333;
+    }
+
+    .bb-subtitle {
+      font-size: 17px;
+      color: #555;
+      line-height: 1.6;
+      max-width: 480px;
+      margin-bottom: 2.5rem;
+      font-weight: 300;
+    }
+
+    .bb-divider {
+      width: 40px;
+      height: 1.5px;
+      background: #B87333;
+      margin-bottom: 2.5rem;
+      opacity: 0.6;
+    }
+
+    .bb-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 3rem;
+    }
+
+    @media (max-width: 480px) {
+      .bb-cards {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .bb-card {
+      background: #faf9f7;
+      border: 0.5px solid #e0ddd8;
+      border-radius: 10px;
+      padding: 1rem 1rem 1.25rem;
+      text-decoration: none;
+      cursor: pointer;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      display: block;
+    }
+
+    .bb-card:hover {
+      border-color: #B87333;
+      box-shadow: 0 2px 8px rgba(184,115,51,0.1);
+    }
+
+    .bb-card-icon {
+      font-size: 22px;
+      margin-bottom: 0.6rem;
+      display: block;
+    }
+
+    .bb-card h3 {
+      font-size: 13px;
+      font-weight: 500;
+      color: #1a1a1a;
+      margin-bottom: 4px;
+    }
+
+    .bb-card p {
+      font-size: 12px;
+      color: #666;
+      line-height: 1.5;
+    }
+
+    .bb-form-label {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .bb-form-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 1rem;
+    }
+
+    .bb-form-row input {
+      flex: 1;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      padding: 0 12px;
+      height: 36px;
+      border: 0.5px solid #ccc;
+      border-radius: 6px;
+      outline: none;
+      min-width: 0;
+    }
+
+    .bb-form-row input:focus {
+      border-color: #B87333;
+    }
+
+    .bb-submit {
+      background: #B87333;
+      color: white;
+      border: none;
+      padding: 0 20px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      height: 36px;
+    }
+
+    .bb-submit:hover {
+      background: #9a6128;
+    }
+
+    .bb-role-select {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .bb-role-btn {
+      font-size: 12px;
+      padding: 6px 14px;
+      border: 0.5px solid #bbb;
+      border-radius: 20px;
+      background: transparent;
+      color: #666;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.15s;
+    }
+
+    .bb-role-btn.active {
+      background: #B87333;
+      border-color: #B87333;
+      color: white;
+    }
+
+    .bb-thanks {
+      display: none;
+      font-size: 15px;
+      color: #555;
+      padding: 1rem 0;
+    }
+
+    .bb-footer {
+      font-size: 12px;
+      color: #999;
+      border-top: 0.5px solid #e0ddd8;
+      padding-top: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+
+<div class="bb-hero">
+  <h2 class="sr-only">Beer Bridge — landing page pro komunitu spojující Čechy a expaty</h2>
+
+  <div class="bb-flag">Prague · v0.1 · coming soon</div>
+
+  <h1 class="bb-title">Beer<br><em>Bridge</em></h1>
+
+  <div class="bb-divider"></div>
+
+  <p class="bb-subtitle">Locals and expats meet over a pint. You bring what you know. They bring what you don't. No classes. No apps. Just useful people in the same room.</p>
+
+  <div class="bb-cards">
+    <a href="meet-in-a-pub.html" class="bb-card">
+      <span class="bb-card-icon">&#127866;</span>
+      <h3>Meet in a pub</h3>
+      <p>Real venues, real conversations. Not Zoom.</p>
+    </a>
+    <a href="exchange-value.html" class="bb-card">
+      <span class="bb-card-icon">&#8646;</span>
+      <h3>Exchange value</h3>
+      <p>Czech for English. Local tips for travel tips. It works both ways.</p>
+    </a>
+    <a href="talks-meetups.html" class="bb-card">
+      <span class="bb-card-icon">&#127963;</span>
+      <h3>Talks & meetups</h3>
+      <p>Czech history for expats. Your country for locals. 20 min + pivo.</p>
+    </a>
+  </div>
+
+  <span class="bb-form-label">I am interested — notify me when it starts</span>
+
+  <div class="bb-role-select">
+    <button class="bb-role-btn active" onclick="selectRole(this, 'Czech local')">Czech local</button>
+    <button class="bb-role-btn" onclick="selectRole(this, 'Expat in Prague')">Expat in Prague</button>
+    <button class="bb-role-btn" onclick="selectRole(this, 'Just curious')">Just curious</button>
+  </div>
+
+  <div class="bb-form-row">
+    <input type="email" id="bb-email" placeholder="your@email.com" />
+    <button class="bb-submit" onclick="handleSubmit()">I'm in</button>
+  </div>
+
+  <div class="bb-thanks" id="bb-thanks">
+    Thanks. We'll reach out when the first bridge opens. &#127866;
+  </div>
+
+  <div class="bb-footer">
+    beerbridge.com &nbsp;·&nbsp; Praha, Czechia &nbsp;·&nbsp; built with a beer on a laptop
+  </div>
+</div>
+
+<script>
+  let selectedRole = 'Czech local';
+
+  function selectRole(btn, role) {
+    document.querySelectorAll('.bb-role-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedRole = role;
+  }
+
+  async function handleSubmit() {
+    const emailEl = document.getElementById('bb-email');
+    const email = emailEl.value.trim();
+    if (!email || !email.includes('@')) {
+      emailEl.style.borderColor = '#E24B4A';
+      return;
+    }
+    const btn = document.querySelector('.bb-submit');
+    btn.disabled = true;
+    btn.textContent = '...';
+    try {
+      await window.saveSignup(email, selectedRole);
+      document.querySelector('.bb-form-row').style.display = 'none';
+      document.querySelector('.bb-role-select').style.display = 'none';
+      document.querySelector('.bb-form-label').style.display = 'none';
+      document.getElementById('bb-thanks').style.display = 'block';
+    } catch(e) {
+      btn.disabled = false;
+      btn.textContent = "I'm in";
+      emailEl.style.borderColor = '#E24B4A';
+    }
+  }
+</script>
+
+</body>
+</html>
